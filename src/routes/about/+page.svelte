@@ -7,7 +7,20 @@
 
 	<section aria-labelledby="backstory">
 		<h2 id="backstory">Backstory</h2>
-		<p>[Backstory: Shivani to write]</p>
+		<p>
+			Meraki is the student-run magazine of NIFT Hyderabad. Since 2021, each edition has brought
+			together the writing, illustration, photography and design of students across the campus.
+		</p>
+		<p>
+			The magazine has never had a place of its own online. It does not have a page on the college
+			website, and its editions have been shared in different places over the years, some on
+			reading sites and some only in print.
+		</p>
+		<p>
+			This archive gathers those editions in one place, so that the work of every Meraki team can
+			still be found and read. It is maintained independently and will grow as more editions are
+			found.
+		</p>
 	</section>
 
 	<section aria-labelledby="declaration">
@@ -43,6 +56,9 @@
 	}
 	section + section {
 		margin-top: 40px;
+	}
+	p + p {
+		margin-top: 1em;
 	}
 	p {
 		margin: 0;
