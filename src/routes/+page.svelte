@@ -105,6 +105,28 @@
 		text-align: center;
 		padding-block: 44px 0;
 	}
+	/* With a mouse, the wordmark and its line stay at the top while the covers scroll beneath,
+	   so the colour change is always in view. Phones have no hover, so it scrolls away there. */
+	@media (hover: hover) and (min-height: 600px) {
+		header {
+			position: sticky;
+			top: env(safe-area-inset-top, 0px);
+			z-index: 10;
+			padding-block: 24px 20px;
+			background: var(--bg);
+		}
+		/* A short fade so covers slide under the header rather than being cut off by a line. */
+		header::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 100%;
+			height: 28px;
+			background: linear-gradient(var(--bg), rgba(255, 255, 255, 0));
+			pointer-events: none;
+		}
+	}
 	h1 {
 		margin: 0;
 		font-family: var(--display);

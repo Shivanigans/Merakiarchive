@@ -3,13 +3,15 @@
 
 	let { children } = $props();
 
-	// The home page has the large wordmark; every other page carries a small one back home.
+	// The home page has the large wordmark; every other page carries a small one back home,
+	// in the colour of the edition being shown.
 	const home = $derived(page.url.pathname === '/');
+	const markColour = $derived(page.data.edition?.colour ?? null);
 </script>
 
 <nav class="wrap" aria-label="Main">
 	{#if !home}
-		<a class="mark" href="/" aria-label="Meraki archive, home">MERAKI</a>
+		<a class="mark" href="/" aria-label="Meraki archive, home" style:color={markColour}>MERAKI</a>
 	{/if}
 	<a class="first" href="/#archive">Archive</a>
 	<a href="/about">About</a>
