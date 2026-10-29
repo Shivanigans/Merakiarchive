@@ -27,7 +27,7 @@ export const editions = [
 		cover: '/editions/issue-01/cover.jpg',
 		pageCount: 0,
 		pdf: null,
-		online: null,
+		online: 'https://anyflip.com/idhhg/ghua/basic',
 		credits: [{ role: 'Cover illustration', names: ['Shivani Chiluka'] }],
 		status: 'placeholder'
 	},
