@@ -15,7 +15,7 @@
 		<p>
 			This is a non-commercial archive made to document the work of the Meraki team at NIFT
 			Hyderabad. All writing, artwork and photographs belong to their creators. For corrections
-			or removals, write to [email placeholder].
+			or removals, write to singhshivani11240@gmail.com.
 		</p>
 	</section>
 </main>
