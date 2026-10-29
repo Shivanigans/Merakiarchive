@@ -9,6 +9,8 @@
 // cover      the cover image, or null for a grey sheet
 // pageCount  number of page images in static/editions/<folder>/pages/
 // pdf        the downloadable PDF, or null
+// online     where the edition is already published online (FlipHTML5, AnyFlip), or null.
+//            If set, its cover opens this link in a new tab instead of the reader.
 // credits    list of { role, names }
 // status     'ready' once its pages are in, otherwise 'placeholder'
 
@@ -25,6 +27,7 @@ export const editions = [
 		cover: '/editions/issue-01/cover.jpg',
 		pageCount: 0,
 		pdf: null,
+		online: null,
 		credits: [{ role: 'Cover illustration', names: ['Shivani Chiluka'] }],
 		status: 'placeholder'
 	},
@@ -38,8 +41,8 @@ export const editions = [
 		cover: '/editions/issue-02/cover.jpg',
 		pageCount: 0,
 		pdf: null,
+		online: 'https://fliphtml5.com/qmolr/ilxr/MERAKI_Issue_2_-_NIFT_Hyderabad_Magazine/',
 		credits: [{ role: 'Cover illustration', names: ['Tanmayee Waikar', 'Nishtha Piplia'] }],
-		// becomes 'ready' once the browser margins are cropped off the PDF
 		status: 'placeholder'
 	},
 	{
@@ -53,6 +56,7 @@ export const editions = [
 		cover: '/editions/issue-03/cover.jpg',
 		pageCount: 0,
 		pdf: null,
+		online: null,
 		credits: [
 			{
 				role: 'Faculty members',
@@ -109,6 +113,7 @@ export const editions = [
 		cover: null,
 		pageCount: 0,
 		pdf: null,
+		online: null,
 		credits: [],
 		status: 'placeholder'
 	}))

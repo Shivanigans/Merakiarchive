@@ -21,6 +21,13 @@
 	function leave() {
 		markColour = null;
 	}
+
+	// The name of the site an online copy lives on, for the note under its cover.
+	const sites = { 'fliphtml5.com': 'FlipHTML5', 'anyflip.com': 'AnyFlip' };
+	function siteName(url) {
+		const host = new URL(url).hostname.replace(/^www\./, '');
+		return sites[host] ?? host;
+	}
 </script>
 
 <svelte:head>
@@ -39,11 +46,17 @@
 <main class="archive wrap" id="archive">
 	<ul class="covers">
 		{#each editions as e, i (e.folder)}
+			<!-- An edition already published online opens there, in a new tab, instead of the reader. -->
+			{@const external = Boolean(e.online)}
 			<li>
 				<a
 					class="cover"
-					href="#issue-{e.issue}"
-					aria-label="Open Meraki issue {e.issue}, {e.published}"
+					href={external ? e.online : `#issue-${e.issue}`}
+					target={external ? '_blank' : undefined}
+					rel={external ? 'noopener' : undefined}
+					aria-label={external
+						? `Read Meraki issue ${e.issue}, ${e.published}, on ${siteName(e.online)} (opens in a new tab)`
+						: `Open Meraki issue ${e.issue}, ${e.published}`}
 					style:--tilt="{tilts[i % tilts.length]}deg"
 					onpointerenter={(event) => enter(event, e.colour)}
 					onpointerleave={leave}
@@ -58,6 +71,9 @@
 					<span class="details">
 						<span class="row"><span>Issue {e.issue}</span><span>{e.published}</span></span>
 						<span class="line">{e.theme}</span>
+						{#if external}
+							<span class="note">Read on {siteName(e.online)} ↗</span>
+						{/if}
 						{#if e.format === 'print'}
 							<span class="tag">Print edition, Spectrum</span>
 						{/if}
@@ -183,6 +199,15 @@
 		font-size: 20px;
 		font-weight: 500;
 		line-height: 1.25;
+	}
+	.note {
+		font-size: 13px;
+		color: var(--muted);
+	}
+	.cover:hover .note,
+	.cover:focus-visible .note {
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
 	.tag {
 		align-self: flex-start;
