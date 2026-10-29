@@ -26,6 +26,7 @@
 			--ink: #111111;
 			--muted: #5f5f5f;
 			--sheet: #d9d9d9;
+			--rule: #e4e4e4;
 			--display: 'Josefin Sans', 'Futura', 'Century Gothic', sans-serif;
 			--body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
 		}

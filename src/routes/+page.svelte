@@ -25,6 +25,9 @@
 		markColour = null;
 	}
 
+	// Whether the page has scrolled, to draw the edge under the pinned header.
+	let scrolled = $state(false);
+
 	// Old links to the overlay reader (/#issue-08) now go to the edition's own page.
 	onMount(() => {
 		const issue = location.hash.match(/^#issue-(\w+)$/)?.[1];
@@ -34,6 +37,8 @@
 	});
 </script>
 
+<svelte:window onscroll={() => (scrolled = scrollY > 8)} />
+
 <svelte:head>
 	<title>Meraki archive</title>
 	<meta
@@ -42,7 +47,7 @@
 	/>
 </svelte:head>
 
-<header class="wrap">
+<header class="wrap" class:scrolled>
 	<h1 style:color={markColour}>MERAKI</h1>
 	<p>An unofficial archive for meraki, nift hyd student-run magazine from 2021 - present</p>
 </header>
@@ -109,16 +114,13 @@
 			padding-block: 24px 20px;
 			background: var(--bg);
 		}
-		/* A short fade so covers slide under the header rather than being cut off by a line. */
-		header::after {
-			content: '';
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 100%;
-			height: 28px;
-			background: linear-gradient(var(--bg), rgba(255, 255, 255, 0));
-			pointer-events: none;
+		/* Once the page scrolls, a hairline gives the header a clean edge over the covers. */
+		header {
+			border-bottom: 1px solid transparent;
+			transition: border-color 0.2s ease;
+		}
+		header.scrolled {
+			border-bottom-color: var(--rule);
 		}
 	}
 	h1 {
