@@ -73,11 +73,13 @@
 					onfocus={(event) => focus(event, e.colour)}
 					onblur={leave}
 				>
-					{#if e.cover}
-						<img class="sheet" src={e.cover} alt="" loading="lazy" />
-					{:else}
-						<span class="sheet empty">cover coming soon</span>
-					{/if}
+					<span class="magazine">
+						{#if e.cover}
+							<img src={e.cover} alt="" loading="lazy" />
+						{:else}
+							<span class="empty">cover coming soon</span>
+						{/if}
+					</span>
 					<span class="details">
 						<span class="row"><span>Issue {e.issue}</span><span>{e.published}</span></span>
 						<span class="line">{e.theme}</span>
@@ -155,36 +157,93 @@
 	.cover:focus-visible {
 		outline: none;
 	}
-	.sheet {
+	/* Each cover is drawn as a printed magazine: A4 in shape, bound on the left, with a few
+	   millimetres of page edges showing on the right and bottom, and a soft sheen. */
+	.magazine {
+		--paper: #fbfaf6;
+		--paper-edge: #dedbd2;
+		position: relative;
+		display: block;
 		width: 78%;
 		max-width: 270px;
-		aspect-ratio: 3 / 4.1;
-		display: block;
-		object-fit: cover;
+		aspect-ratio: 595 / 842;
 		background: var(--sheet);
+		border-radius: 1px 3px 3px 1px;
 		box-shadow:
-			0 2px 4px rgba(0, 0, 0, 0.12),
-			0 6px 14px rgba(0, 0, 0, 0.08);
+			1px 1px 0 var(--paper),
+			2px 2px 0 var(--paper-edge),
+			3px 3px 0 var(--paper),
+			4px 4px 0 var(--paper-edge),
+			5px 5px 0 var(--paper),
+			6px 8px 14px rgba(0, 0, 0, 0.16),
+			0 22px 30px -14px rgba(0, 0, 0, 0.3);
 		transform: rotate(var(--tilt, 0deg));
+		transform-origin: 50% 60%;
 		transition:
-			transform 0.35s ease,
-			box-shadow 0.35s ease;
+			transform 0.4s ease,
+			box-shadow 0.4s ease;
+	}
+	.magazine img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: inherit;
+	}
+	/* The spine: a crease and shadow where the cover folds round the binding. */
+	.magazine::before,
+	.magazine::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+	}
+	.magazine::before {
+		background: linear-gradient(
+			90deg,
+			rgba(0, 0, 0, 0.32) 0,
+			rgba(0, 0, 0, 0.1) 1.4%,
+			rgba(255, 255, 255, 0.22) 2.4%,
+			rgba(0, 0, 0, 0.14) 3.6%,
+			rgba(0, 0, 0, 0) 7%
+		);
+	}
+	/* Light catching the coated paper. */
+	.magazine::after {
+		background: linear-gradient(
+			115deg,
+			rgba(255, 255, 255, 0.2) 0%,
+			rgba(255, 255, 255, 0) 32%,
+			rgba(255, 255, 255, 0) 68%,
+			rgba(0, 0, 0, 0.08) 100%
+		);
 	}
 	.empty {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		height: 100%;
 		font-size: 13px;
 		color: var(--muted);
 	}
-	.cover:hover .sheet,
-	.cover:focus-visible .sheet {
-		transform: rotate(0deg) scale(1.03);
-		box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+	/* Picked up: the magazine straightens, lifts, and its cover swings open a little. */
+	.cover:hover .magazine,
+	.cover:focus-visible .magazine {
+		transform: perspective(1100px) translateY(-6px) rotateY(-9deg);
+		transform-origin: 0% 50%;
+		box-shadow:
+			1px 1px 0 var(--paper),
+			2px 2px 0 var(--paper-edge),
+			3px 3px 0 var(--paper),
+			4px 4px 0 var(--paper-edge),
+			5px 5px 0 var(--paper),
+			14px 18px 26px rgba(0, 0, 0, 0.2),
+			0 34px 40px -18px rgba(0, 0, 0, 0.35);
 	}
-	.cover:focus-visible .sheet {
+	.cover:focus-visible .magazine {
 		outline: 2px solid var(--ink);
-		outline-offset: 6px;
+		outline-offset: 10px;
 	}
 
 	.details {
@@ -233,12 +292,12 @@
 	/* Less motion asked for: covers lie straight and nothing fades or lifts. */
 	@media (prefers-reduced-motion: reduce) {
 		h1,
-		.sheet {
+		.magazine {
 			transition: none;
 		}
-		.sheet,
-		.cover:hover .sheet,
-		.cover:focus-visible .sheet {
+		.magazine,
+		.cover:hover .magazine,
+		.cover:focus-visible .magazine {
 			transform: none;
 		}
 	}
