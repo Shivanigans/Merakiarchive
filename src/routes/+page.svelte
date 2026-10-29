@@ -4,7 +4,7 @@
 	import { editions } from '$lib/editions.js';
 
 	// Each cover sits at its own angle, like magazines dropped on a table.
-	const tilts = [-7, 14, -1, 9, -5, 4, -11];
+	const tilts = [-3, 4, -1, 2.5, -4, 1.5, -2, 3];
 
 	// The wordmark takes the colour of the cover under the mouse or keyboard focus.
 	let markColour = $state(null);
@@ -157,31 +157,22 @@
 	.cover:focus-visible {
 		outline: none;
 	}
-	/* Each cover is drawn as a printed magazine: A4 in shape, bound on the left, with a few
-	   millimetres of page edges showing on the right and bottom, and a soft sheen. */
+	/* Each cover is drawn as a loose printed magazine lying on a table: thin paper with a gentle
+	   curve of light across it and one corner lifting slightly, casting a soft shadow. */
 	.magazine {
-		--paper: #fbfaf6;
-		--paper-edge: #dedbd2;
 		position: relative;
 		display: block;
 		width: 78%;
 		max-width: 270px;
 		aspect-ratio: 595 / 842;
-		background: var(--sheet);
-		border-radius: 1px 3px 3px 1px;
+		border-radius: 2px;
 		box-shadow:
-			1px 1px 0 var(--paper),
-			2px 2px 0 var(--paper-edge),
-			3px 3px 0 var(--paper),
-			4px 4px 0 var(--paper-edge),
-			5px 5px 0 var(--paper),
-			6px 8px 14px rgba(0, 0, 0, 0.16),
-			0 22px 30px -14px rgba(0, 0, 0, 0.3);
+			0 1px 2px rgba(0, 0, 0, 0.1),
+			0 8px 18px -8px rgba(0, 0, 0, 0.22);
 		transform: rotate(var(--tilt, 0deg));
-		transform-origin: 50% 60%;
 		transition:
-			transform 0.4s ease,
-			box-shadow 0.4s ease;
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 	.magazine img {
 		display: block;
@@ -190,56 +181,58 @@
 		object-fit: cover;
 		border-radius: inherit;
 	}
-	/* The spine: a crease and shadow where the cover folds round the binding. */
-	.magazine::before,
-	.magazine::after {
+	/* The curve: light and shade rolling gently across the sheet. */
+	.magazine::before {
 		content: '';
 		position: absolute;
 		inset: 0;
 		border-radius: inherit;
 		pointer-events: none;
-	}
-	.magazine::before {
 		background: linear-gradient(
-			90deg,
-			rgba(0, 0, 0, 0.32) 0,
-			rgba(0, 0, 0, 0.1) 1.4%,
-			rgba(255, 255, 255, 0.22) 2.4%,
-			rgba(0, 0, 0, 0.14) 3.6%,
-			rgba(0, 0, 0, 0) 7%
+			100deg,
+			rgba(0, 0, 0, 0.07) 0%,
+			rgba(255, 255, 255, 0.14) 22%,
+			rgba(255, 255, 255, 0) 42%,
+			rgba(0, 0, 0, 0.05) 68%,
+			rgba(255, 255, 255, 0.1) 92%,
+			rgba(0, 0, 0, 0.04) 100%
 		);
 	}
-	/* Light catching the coated paper. */
+	/* The lifted corner: a soft shadow tucked under the bottom right of the sheet. */
 	.magazine::after {
-		background: linear-gradient(
-			115deg,
-			rgba(255, 255, 255, 0.2) 0%,
-			rgba(255, 255, 255, 0) 32%,
-			rgba(255, 255, 255, 0) 68%,
-			rgba(0, 0, 0, 0.08) 100%
-		);
+		content: '';
+		position: absolute;
+		z-index: -1;
+		right: 6%;
+		bottom: 3%;
+		width: 55%;
+		height: 18%;
+		box-shadow: 0 12px 14px rgba(0, 0, 0, 0.22);
+		transform: rotate(3deg);
+		transition: box-shadow 0.3s ease;
 	}
+	/* The grey sheet sits on its own layer, above the corner shadow. */
 	.empty {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: 100%;
+		background: var(--sheet);
+		border-radius: inherit;
 		font-size: 13px;
 		color: var(--muted);
 	}
-	/* Picked up: the magazine straightens, lifts, and its cover swings open a little. */
+	/* Hover or keyboard focus: the sheet lifts just off the table. */
 	.cover:hover .magazine,
 	.cover:focus-visible .magazine {
-		transform: perspective(1100px) translateY(-6px) rotateY(-9deg);
-		transform-origin: 0% 50%;
+		transform: rotate(var(--tilt, 0deg)) translateY(-3px);
 		box-shadow:
-			1px 1px 0 var(--paper),
-			2px 2px 0 var(--paper-edge),
-			3px 3px 0 var(--paper),
-			4px 4px 0 var(--paper-edge),
-			5px 5px 0 var(--paper),
-			14px 18px 26px rgba(0, 0, 0, 0.2),
-			0 34px 40px -18px rgba(0, 0, 0, 0.35);
+			0 2px 3px rgba(0, 0, 0, 0.1),
+			0 12px 22px -8px rgba(0, 0, 0, 0.26);
+	}
+	.cover:hover .magazine::after,
+	.cover:focus-visible .magazine::after {
+		box-shadow: 0 15px 16px rgba(0, 0, 0, 0.24);
 	}
 	.cover:focus-visible .magazine {
 		outline: 2px solid var(--ink);
