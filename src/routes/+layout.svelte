@@ -1,9 +1,17 @@
 <script>
+	import { page } from '$app/state';
+
 	let { children } = $props();
+
+	// The home page has the large wordmark; every other page carries a small one back home.
+	const home = $derived(page.url.pathname === '/');
 </script>
 
 <nav class="wrap" aria-label="Main">
-	<a href="/#archive">Archive</a>
+	{#if !home}
+		<a class="mark" href="/" aria-label="Meraki archive, home">MERAKI</a>
+	{/if}
+	<a class="first" href="/#archive">Archive</a>
 	<a href="/about">About</a>
 </nav>
 
@@ -45,9 +53,21 @@
 
 	nav {
 		display: flex;
-		justify-content: flex-end;
+		align-items: baseline;
 		gap: clamp(32px, 6vw, 72px);
 		padding-block: 36px 0;
+	}
+	nav .first {
+		margin-left: auto;
+	}
+	nav .mark {
+		font-weight: 700;
+		font-size: 28px;
+		line-height: 1;
+		letter-spacing: 0.04em;
+	}
+	nav .mark:hover {
+		text-decoration: none;
 	}
 	nav a {
 		font-family: var(--display);
