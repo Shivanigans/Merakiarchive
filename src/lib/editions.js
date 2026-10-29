@@ -174,7 +174,6 @@ export const editions = [
 			},
 			{ role: 'Official printer', names: ['SS Graphics, Secunderabad'] }
 		],
-		// pages still to be turned into images for the reader
-		status: 'placeholder'
+		status: 'ready'
 	}
 ];

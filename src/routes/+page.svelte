@@ -1,5 +1,9 @@
 <script>
+	import { onMount } from 'svelte';
+	import { page } from '$app/state';
+	import { pushState, replaceState } from '$app/navigation';
 	import { editions } from '$lib/editions.js';
+	import Reader from '$lib/Reader.svelte';
 
 	// Each cover sits at its own angle, like magazines dropped on a table.
 	const tilts = [-7, 14, -1, 9, -5, 4, -11];
@@ -21,6 +25,45 @@
 	function leave() {
 		markColour = null;
 	}
+
+	// An edition opens in the reader from a cover click (kept in the browser history, so Back
+	// closes it) or from a shared link such as /#issue-08.
+	let linked = $state(null);
+	const openIssue = $derived(page.state.issue ?? linked);
+	const opened = $derived(editions.find((e) => e.issue === openIssue && !e.online));
+	let returnFocus = null;
+
+	onMount(() => {
+		// Also when a link is pasted into a tab that already has the archive open.
+		const readHash = () => (linked = location.hash.match(/^#issue-(\w+)$/)?.[1] ?? null);
+		readHash();
+		addEventListener('hashchange', readHash);
+		return () => removeEventListener('hashchange', readHash);
+	});
+
+	function openReader(event, e) {
+		// Let ctrl- or cmd-click open a new tab as usual.
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+		event.preventDefault();
+		pushState(`#issue-${e.issue}`, { issue: e.issue });
+	}
+
+	function closeReader() {
+		returnFocus = document.querySelector(`a.cover[href="#issue-${openIssue}"]`);
+		if (page.state.issue) history.back();
+		else {
+			linked = null;
+			replaceState(page.url.pathname, {});
+		}
+	}
+
+	// Once the reader has gone, put keyboard focus back on the cover it was opened from.
+	$effect(() => {
+		if (!opened && returnFocus) {
+			returnFocus.focus({ preventScroll: true });
+			returnFocus = null;
+		}
+	});
 
 	// The name of the site an online copy lives on, for the note under its cover.
 	const sites = { 'fliphtml5.com': 'FlipHTML5', 'anyflip.com': 'AnyFlip' };
@@ -60,6 +103,7 @@
 					style:--tilt="{tilts[i % tilts.length]}deg"
 					onpointerenter={(event) => enter(event, e.colour)}
 					onpointerleave={leave}
+					onclick={external ? undefined : (event) => openReader(event, e)}
 					onfocus={(event) => focus(event, e.colour)}
 					onblur={leave}
 				>
@@ -83,6 +127,12 @@
 		{/each}
 	</ul>
 </main>
+
+{#if opened}
+	{#key opened.issue}
+		<Reader edition={opened} onclose={closeReader} />
+	{/key}
+{/if}
 
 <style>
 	header {
