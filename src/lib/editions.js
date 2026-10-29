@@ -1,7 +1,7 @@
-// Every Meraki edition, oldest first. The home page and the reader read from this list.
+// Every Meraki edition, oldest first. The home page and each edition's page read from this list.
 //
-// issue      the number shown on the site. Change it freely if an edition turns up that
-//            belongs earlier; links use it (#issue-03), the files use `folder` instead.
+// issue      the number shown on the site, following the edition number the magazine gives
+//            itself ("8th edition" is '08'). Its page lives at /issue-08.
 // folder     where the edition's files live, inside static/editions/
 // published  month and year, e.g. 'Oct 2022'
 // format     'online' or 'print' (print-only Spectrum editions get a tag)
@@ -10,11 +10,27 @@
 // pageCount  number of page images in static/editions/<folder>/pages/
 // pdf        the downloadable PDF, or null
 // online     where the edition is already published online (FlipHTML5, AnyFlip), or null.
-//            If set, its cover opens this link in a new tab instead of the reader.
+//            If set, its cover opens this link in a new tab instead of its own page.
 // credits    list of { role, names }
 // status     'ready' once its pages are in, otherwise 'placeholder'
 
 export const PLACEHOLDER_COLOUR = '#8a8a8a';
+
+// An edition we know of but have no files for yet.
+const missing = (issue) => ({
+	issue,
+	folder: `issue-${issue}`,
+	published: '[Date]',
+	theme: '[Theme or tagline]',
+	format: null,
+	colour: PLACEHOLDER_COLOUR,
+	cover: null,
+	pageCount: 0,
+	pdf: null,
+	online: null,
+	credits: [],
+	status: 'placeholder'
+});
 
 export const editions = [
 	{
@@ -45,15 +61,16 @@ export const editions = [
 		credits: [{ role: 'Cover illustration', names: ['Tanmayee Waikar', 'Nishtha Piplia'] }],
 		status: 'placeholder'
 	},
+	missing('03'),
 	{
-		issue: '03',
-		folder: 'issue-03',
+		issue: '04',
+		folder: 'issue-04',
 		// date still to confirm; its director's note calls it the fourth edition
 		published: 'Oct 2022',
 		theme: 'Metamorphosis',
 		format: 'online',
 		colour: '#c8641c',
-		cover: '/editions/issue-03/cover.jpg',
+		cover: '/editions/issue-04/cover.jpg',
 		pageCount: 0,
 		pdf: null,
 		online: null,
@@ -103,20 +120,125 @@ export const editions = [
 		// becomes 'ready' once the PDF is turned into page images
 		status: 'placeholder'
 	},
-	...['04', '05', '06', '07'].map((issue) => ({
-		issue,
-		folder: `issue-${issue}`,
-		published: '[Date]',
-		theme: '[Theme or tagline]',
-		format: null,
-		colour: PLACEHOLDER_COLOUR,
-		cover: null,
-		pageCount: 0,
-		pdf: null,
+	{
+		issue: '05',
+		folder: 'issue-05',
+		// printed for Spectrum 2023 (theme revealed 20 Feb 2023); the PDF was made on 4 Apr 2023.
+		// Month to confirm.
+		published: 'Apr 2023',
+		theme: 'Desi Punk',
+		format: 'print',
+		colour: '#1e4329',
+		cover: '/editions/issue-05/cover.jpg',
+		pageCount: 72,
+		pdf: '/editions/issue-05/meraki-05-desi-punk.pdf',
 		online: null,
-		credits: [],
-		status: 'placeholder'
-	})),
+		credits: [
+			{ role: 'Director', names: ['Shri Vijay Kumar Mantri, IAS'] },
+			{ role: 'Faculty', names: ['Jyotirmai Singothu', 'K. Anant Phani', 'Gajam Rajesh Kumar'] },
+			{ role: 'Editorial team', names: ['Noyonika', 'Shivani Chiluka'] },
+			{
+				role: 'Design team',
+				names: [
+					'Aaditya',
+					'Arya Vishnu',
+					'Tanmayee',
+					'Lavanya Roy',
+					'Vedika Kabra',
+					'Nishtha Piplia',
+					'Ashish',
+					'Gauri'
+				]
+			},
+			{
+				role: 'Content team',
+				names: [
+					'Dhriti',
+					'Leeza',
+					'Shivani Singh',
+					'Rashad',
+					'Noopur',
+					'Vaaishali',
+					'Hailey',
+					'Gautami'
+				]
+			},
+			{ role: 'PR team', names: ['Asmita', 'Gurnoor', 'Gunjika', 'Uday', 'Aonen'] },
+			{ role: 'Photography team', names: ['Juswin', 'Abhishek'] },
+			{ role: 'Printing partner', names: ['Fashion Art Stationary, Madhapur'] }
+		],
+		status: 'ready'
+	},
+	{
+		issue: '06',
+		folder: 'issue-06',
+		// the PDF was made on 5 Feb 2024; its events run to Oct 2023. Month to confirm.
+		published: 'Feb 2024',
+		// the cover reads "* Title goes here *"; the director's note names the theme
+		theme: 'Figuring It Out',
+		format: null,
+		colour: '#7f3923',
+		cover: '/editions/issue-06/cover.jpg',
+		pageCount: 68,
+		pdf: '/editions/issue-06/meraki-06-figuring-it-out.pdf',
+		online: null,
+		credits: [
+			{ role: 'Director', names: ['Shri Vijay Kumar Mantri, IAS'] },
+			{ role: 'Faculty', names: ['Jyotirmai Singothu', 'K. Anant Phani', 'Gajam Rajesh Kumar'] },
+			{ role: 'Editorial board', names: ['Noopur Joglekar', 'Dhriti Verma', 'Ashish Sinha'] },
+			{
+				role: 'Design team',
+				names: [
+					'Gauri Rathi',
+					'Ashish Sinha',
+					'Samhita Chilukuri',
+					'Lavanya Roy',
+					'Vedika Kabra',
+					'Utkarsha Gaidhane',
+					'Riya R Gaikawad',
+					'Abel Mathew',
+					'Bhoomi Agarwal',
+					'Nishat Fathima',
+					'Gouri Ammanagi',
+					'Arjun V S'
+				]
+			},
+			{
+				role: 'Content team',
+				names: [
+					'Hailey Thomas',
+					'Leeza Thottan',
+					'Dhriti Verma',
+					'Noopur Joglekar',
+					'Niharika Soni',
+					'Saumya Gupta',
+					'Kashvi Keya',
+					'Sanjana Bheri',
+					'Mahika Khandelwal',
+					'Shrija',
+					'Sanjana Reddy',
+					'Yashita',
+					'Shruti Kundnani'
+				]
+			},
+			{
+				role: 'PR team',
+				names: [
+					'Gurnoor Kaur',
+					'Asmita Amla',
+					'Aonen',
+					'Uday Choudhary',
+					'Suhani Maini',
+					'Pratyusha Dondapati',
+					'Khushi Gulati',
+					'Dhanya Sri'
+				]
+			},
+			{ role: 'Photography team', names: ['Pranav Kher', 'Priya Mishra', 'Samyak Dhoke', 'Faiz'] }
+		],
+		status: 'ready'
+	},
+	missing('07'),
 	{
 		issue: '08',
 		folder: 'issue-08',
