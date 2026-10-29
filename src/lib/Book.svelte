@@ -32,6 +32,10 @@
 		return `${first}–${first + 1} / ${total}`;
 	});
 
+	// How far through the magazine the reader is, from 0 to 1. The stack of page edges moves
+	// from the right-hand side to the left as the pages are read, as in a real magazine.
+	const read = $derived(current / Math.max(1, edition.pageCount - 1));
+
 	// The last page is showing, alone or as the right half of a spread.
 	const atEnd = $derived(
 		(portrait || current === 0 ? current : current + 1) >= edition.pageCount - 1
@@ -54,8 +58,8 @@
 				showCover: true,
 				usePortrait: true,
 				mobileScrollSupport: false,
-				maxShadowOpacity: 0.35,
-				flippingTime: still ? 1 : 700
+				maxShadowOpacity: 0.6,
+				flippingTime: still ? 1 : 850
 			});
 			flip.on('init', (e) => {
 				current = e.data.page;
@@ -94,7 +98,7 @@
 <svelte:window {onkeydown} />
 
 <div class="reader" role="region" aria-label="Magazine pages, use the arrow keys to turn">
-	<div class="stage">
+	<div class="stage" style:--before={read} style:--after={1 - read}>
 		<div class="book" bind:this={book}>
 			{#each sources as _, i}
 				<div class="page">
@@ -131,6 +135,49 @@
 	}
 	.page {
 		background: var(--sheet);
+	}
+	/* The fold: each page darkens towards the binding, where the paper curves into the spine. */
+	.page::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+	.page:global(.--left)::after {
+		background: linear-gradient(
+			to left,
+			rgba(0, 0, 0, 0.24) 0,
+			rgba(0, 0, 0, 0.1) 3%,
+			rgba(0, 0, 0, 0.03) 9%,
+			rgba(0, 0, 0, 0) 16%,
+			rgba(255, 255, 255, 0) 92%,
+			rgba(0, 0, 0, 0.04) 100%
+		);
+	}
+	.page:global(.--right)::after {
+		background: linear-gradient(
+			to right,
+			rgba(0, 0, 0, 0.24) 0,
+			rgba(0, 0, 0, 0.1) 3%,
+			rgba(0, 0, 0, 0.03) 9%,
+			rgba(0, 0, 0, 0) 16%,
+			rgba(255, 255, 255, 0) 92%,
+			rgba(0, 0, 0, 0.04) 100%
+		);
+	}
+	/* Page edges on the outer side (up to 6px, read pages on the left, unread on the right),
+	   and the magazine's shadow on the table. */
+	.page:global(.--left) {
+		box-shadow:
+			calc(var(--before) * -3px) calc(var(--before) * 1px) 0 #f1efe9,
+			calc(var(--before) * -6px) calc(var(--before) * 2px) 0 #d5d1c8,
+			-4px 16px 24px -12px rgba(0, 0, 0, 0.4);
+	}
+	.page:global(.--right) {
+		box-shadow:
+			calc(var(--after) * 3px) calc(var(--after) * 1px) 0 #f1efe9,
+			calc(var(--after) * 6px) calc(var(--after) * 2px) 0 #d5d1c8,
+			4px 16px 24px -12px rgba(0, 0, 0, 0.4);
 	}
 	.page img {
 		display: block;

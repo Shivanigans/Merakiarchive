@@ -1,21 +1,19 @@
 <script>
 	import Book from '$lib/Book.svelte';
+	import { siteName } from '$lib/sites.js';
 
-	// One edition: its name, the flip-through magazine, then its details and credits.
+	// One edition: its name, the flip-through magazine (or its cover, if the magazine lives
+	// elsewhere or isn't here yet), then its details and credits.
 	let { data } = $props();
 	const { edition, previous, next } = $derived(data);
-	const ready = $derived(edition.status === 'ready' && edition.pageCount > 0);
-	// Editions we know of but haven't found yet still carry '[Theme or tagline]'.
-	const isKnown = (e) => !e.theme.startsWith('[');
-	const known = $derived(isKnown(edition));
-	const nameOf = (e) => (isKnown(e) ? e.theme : 'Not added yet');
+	const ready = $derived(edition.status === 'ready' && edition.pageCount > 0 && !edition.online);
 </script>
 
 <svelte:head>
-	<title>{known ? `${edition.theme}, Meraki issue ${edition.issue}` : `Meraki issue ${edition.issue}`}</title>
+	<title>{edition.theme}, Meraki issue {edition.issue}</title>
 	<meta
 		name="description"
-		content="Meraki issue {edition.issue}{known ? `, ${edition.theme}` : ''}, from NIFT Hyderabad's student magazine archive."
+		content="Meraki issue {edition.issue}, {edition.theme}, from NIFT Hyderabad's student magazine archive."
 	/>
 </svelte:head>
 
@@ -23,13 +21,8 @@
 	<a class="back" href="/#archive"><span aria-hidden="true">←</span> All editions</a>
 
 	<header>
-		{#if known}
-			<p class="eyebrow">Issue {edition.issue}, {edition.published}</p>
-			<h1 style:color={edition.colour}>{edition.theme}</h1>
-		{:else}
-			<p class="eyebrow">Not yet in the archive</p>
-			<h1 style:color={edition.colour}>Issue {edition.issue}</h1>
-		{/if}
+		<p class="eyebrow">Issue {edition.issue}, {edition.published}</p>
+		<h1 style:color={edition.colour}>{edition.theme}</h1>
 		{#if edition.format === 'print'}
 			<span class="tag">Print edition, Spectrum</span>
 		{/if}
@@ -39,7 +32,22 @@
 		{#if ready}
 			<Book {edition} />
 		{:else}
-			<div class="empty">Pages not added yet</div>
+			<div class="elsewhere">
+				{#if edition.online}
+					<a class="magazine" href={edition.online} target="_blank" rel="noopener" tabindex="-1">
+						<img src={edition.cover} alt="Cover of Meraki issue {edition.issue}" />
+					</a>
+					<a class="read" href={edition.online} target="_blank" rel="noopener">
+						Read on {siteName(edition.online)} <span aria-hidden="true">↗</span>
+						<span class="visually-hidden">(opens in a new tab)</span>
+					</a>
+				{:else}
+					<span class="magazine">
+						<img src={edition.cover} alt="Cover of Meraki issue {edition.issue}" />
+					</span>
+					<p class="note">The pages of this edition aren't in the archive yet.</p>
+				{/if}
+			</div>
 		{/if}
 	{/key}
 
@@ -48,10 +56,8 @@
 			<h2 id="details">Details</h2>
 			<dl>
 				<div><dt>Issue</dt><dd>{edition.issue}</dd></div>
-				{#if known}
-					<div><dt>Published</dt><dd>{edition.published}</dd></div>
-					<div><dt>Theme</dt><dd>{edition.theme}</dd></div>
-				{/if}
+				<div><dt>Published</dt><dd>{edition.published}</dd></div>
+				<div><dt>Theme</dt><dd>{edition.theme}</dd></div>
 				{#if edition.format}
 					<div>
 						<dt>Format</dt>
@@ -60,6 +66,9 @@
 				{/if}
 				{#if edition.pageCount}
 					<div><dt>Pages</dt><dd>{edition.pageCount}</dd></div>
+				{/if}
+				{#if edition.online}
+					<div><dt>Read at</dt><dd>{siteName(edition.online)}</dd></div>
 				{/if}
 			</dl>
 			{#if edition.pdf}
@@ -84,13 +93,13 @@
 			{#if previous}
 				<a class="prev" href="/issue-{previous.issue}">
 					<span class="label"><span aria-hidden="true">←</span> Issue {previous.issue}</span>
-					<span class="name">{nameOf(previous)}</span>
+					<span class="name">{previous.theme}</span>
 				</a>
 			{/if}
 			{#if next}
 				<a class="next" href="/issue-{next.issue}">
 					<span class="label">Issue {next.issue} <span aria-hidden="true">→</span></span>
-					<span class="name">{nameOf(next)}</span>
+					<span class="name">{next.theme}</span>
 				</a>
 			{/if}
 		</nav>
@@ -147,16 +156,69 @@
 		padding: 3px 7px;
 	}
 
-	.empty {
+	/* An edition read elsewhere, or not here yet: its cover as a loose magazine, and a way on. */
+	.elsewhere {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		max-width: 420px;
+		gap: 32px;
+	}
+	.magazine {
+		position: relative;
+		display: block;
+		width: min(78vw, 340px);
 		aspect-ratio: 595 / 842;
-		margin: 0 auto;
-		background: var(--sheet);
-		color: var(--muted);
+		border-radius: 2px;
+		box-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.1),
+			0 10px 22px -8px rgba(0, 0, 0, 0.24);
+	}
+	.magazine img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: inherit;
+	}
+	.magazine::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+		background: linear-gradient(
+			100deg,
+			rgba(0, 0, 0, 0.07) 0%,
+			rgba(255, 255, 255, 0.14) 22%,
+			rgba(255, 255, 255, 0) 42%,
+			rgba(0, 0, 0, 0.05) 68%,
+			rgba(255, 255, 255, 0.1) 92%,
+			rgba(0, 0, 0, 0.04) 100%
+		);
+	}
+	.read {
 		font-size: 15px;
+		font-weight: 500;
+		text-decoration: none;
+		border: 1px solid var(--ink);
+		padding: 10px 18px;
+	}
+	.read:hover {
+		background: var(--ink);
+		color: var(--bg);
+	}
+	.note {
+		margin: 0;
+		font-size: 15px;
+		color: var(--muted);
+	}
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
 	}
 
 	.about {

@@ -10,28 +10,12 @@
 // pageCount  number of page images in static/editions/<folder>/pages/
 // pdf        the downloadable PDF, or null
 // online     where the edition is already published online (FlipHTML5, AnyFlip), or null.
-//            If set, its cover opens this link in a new tab instead of its own page.
+//            If set, its cover on the home page opens this link in a new tab; its own page
+//            shows the details and a link there.
 // credits    list of { role, names }
 // status     'ready' once its pages are in, otherwise 'placeholder'
 
-export const PLACEHOLDER_COLOUR = '#8a8a8a';
-
-// An edition we know of but have no files for yet.
-const missing = (issue) => ({
-	issue,
-	folder: `issue-${issue}`,
-	published: '[Date]',
-	theme: '[Theme or tagline]',
-	format: null,
-	colour: PLACEHOLDER_COLOUR,
-	cover: null,
-	pageCount: 0,
-	pdf: null,
-	online: null,
-	credits: [],
-	status: 'placeholder'
-});
-
+// Editions 03 and 07 aren't in the archive yet; add them here once their files turn up.
 export const editions = [
 	{
 		issue: '01',
@@ -61,7 +45,6 @@ export const editions = [
 		credits: [{ role: 'Cover illustration', names: ['Tanmayee Waikar', 'Nishtha Piplia'] }],
 		status: 'placeholder'
 	},
-	missing('03'),
 	{
 		issue: '04',
 		folder: 'issue-04',
@@ -123,9 +106,8 @@ export const editions = [
 	{
 		issue: '05',
 		folder: 'issue-05',
-		// printed for Spectrum 2023 (theme revealed 20 Feb 2023); the PDF was made on 4 Apr 2023.
-		// Month to confirm.
-		published: 'Apr 2023',
+		// the magazine calls itself the "Spectrum 2023 release"; it names no month
+		published: '2023',
 		theme: 'Desi Punk',
 		format: 'print',
 		colour: '#1e4329',
@@ -172,11 +154,12 @@ export const editions = [
 	{
 		issue: '06',
 		folder: 'issue-06',
-		// the PDF was made on 5 Feb 2024; its events run to Oct 2023. Month to confirm.
-		published: 'Feb 2024',
+		// the magazine names no date; its events run from Aug to Oct 2023
+		published: '2023',
 		// the cover reads "* Title goes here *"; the director's note names the theme
 		theme: 'Figuring It Out',
-		format: null,
+		// released as a PDF, not printed for Spectrum
+		format: 'online',
 		colour: '#7f3923',
 		cover: '/editions/issue-06/cover.jpg',
 		pageCount: 68,
@@ -238,12 +221,11 @@ export const editions = [
 		],
 		status: 'ready'
 	},
-	missing('07'),
 	{
 		issue: '08',
 		folder: 'issue-08',
-		// the PDF was made on 7 Mar 2025; month to confirm. Calls itself the 8th edition.
-		published: 'Mar 2025',
+		// calls itself the 8th edition; names no date, but mentions a show from March 2025
+		published: '2025',
 		theme: 'Mirage',
 		format: 'print',
 		colour: '#101048',

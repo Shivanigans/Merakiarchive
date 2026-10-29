@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { editions } from '$lib/editions.js';
+	import { siteName } from '$lib/sites.js';
 
 	// Each cover sits at its own angle, like magazines dropped on a table.
 	const tilts = [-3, 4, -1, 2.5, -4, 1.5, -2, 3];
@@ -27,17 +28,10 @@
 	// Old links to the overlay reader (/#issue-08) now go to the edition's own page.
 	onMount(() => {
 		const issue = location.hash.match(/^#issue-(\w+)$/)?.[1];
-		if (issue && editions.some((e) => e.issue === issue && !e.online)) {
+		if (issue && editions.some((e) => e.issue === issue)) {
 			goto(`/issue-${issue}`, { replaceState: true });
 		}
 	});
-
-	// The name of the site an online copy lives on, for the note under its cover.
-	const sites = { 'fliphtml5.com': 'FlipHTML5', 'anyflip.com': 'AnyFlip' };
-	function siteName(url) {
-		const host = new URL(url).hostname.replace(/^www\./, '');
-		return sites[host] ?? host;
-	}
 </script>
 
 <svelte:head>
