@@ -116,5 +116,65 @@ export const editions = [
 		online: null,
 		credits: [],
 		status: 'placeholder'
-	}))
+	})),
+	{
+		issue: '08',
+		folder: 'issue-08',
+		// the PDF was made on 7 Mar 2025; month to confirm. Calls itself the 8th edition.
+		published: 'Mar 2025',
+		theme: 'Mirage',
+		format: 'print',
+		colour: '#101048',
+		cover: '/editions/issue-08/cover.jpg',
+		pageCount: 60,
+		pdf: '/editions/issue-08/meraki-08-mirage.pdf',
+		online: null,
+		credits: [
+			{ role: 'Director', names: ['Prof. Dr. Malini Divakala'] },
+			{
+				role: 'Faculty',
+				names: ['Jyotirmai Singothu', 'K. Anant Phani', 'Ramakrishna K']
+			},
+			{ role: 'Editorial board', names: ['Uday', 'Lavanya'] },
+			{
+				role: 'Design',
+				names: [
+					'Utkarsha',
+					'Riya',
+					'Bhoomi',
+					'Rakshana',
+					'Shreeja',
+					'Shubhangi',
+					'Gouri',
+					'Anushree',
+					'Kalyani',
+					'Arushi',
+					'Vishakha',
+					'Kunalee',
+					'Nishat'
+				]
+			},
+			{
+				role: 'Content',
+				names: [
+					'Shaivi',
+					'Mahika',
+					'Sanjana',
+					'Tanya',
+					'Vibha',
+					'Shruti',
+					'Malavika',
+					'Shrija',
+					'Simar'
+				]
+			},
+			{
+				role: 'PR',
+				names: ['Suhani', 'Kishan', 'Pranita', 'Reeva', 'Himanshu', 'Harshita', 'Ishita']
+			},
+			{ role: 'Official printer', names: ['SS Graphics, Secunderabad'] }
+		],
+		// pages still to be turned into images for the reader
+		status: 'placeholder'
+	}
 ];
