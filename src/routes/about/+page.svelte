@@ -1,3 +1,8 @@
+<script>
+	import { editions } from '$lib/editions.js';
+	import { thanks } from '$lib/thanks.js';
+</script>
+
 <svelte:head>
 	<title>About the Meraki archive</title>
 </svelte:head>
@@ -21,6 +26,27 @@
 			still be found and read. It is maintained independently and will grow as more editions are
 			found.
 		</p>
+	</section>
+
+	<section aria-labelledby="thank-you">
+		<h2 id="thank-you">Thank you</h2>
+		<p>
+			Meraki exists because of every student who has written, drawn, photographed, designed,
+			edited and promoted it. Each edition's team is credited on its page:
+		</p>
+		<ul class="editions">
+			{#each editions as e (e.folder)}
+				<li><a href="/issue-{e.issue}">Issue {e.issue}, {e.theme}</a></li>
+			{/each}
+		</ul>
+
+		<h3>Special thanks</h3>
+		<p>To the people who have helped bring this archive together:</p>
+		<ul class="people">
+			{#each thanks as t}
+				<li><span class="name">{t.name}</span>, {t.for}</li>
+			{/each}
+		</ul>
 	</section>
 
 	<section aria-labelledby="declaration">
@@ -57,8 +83,28 @@
 	section + section {
 		margin-top: 40px;
 	}
-	p + p {
+	p + p,
+	p + ul,
+	ul + p {
 		margin-top: 1em;
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: 17px;
+		line-height: 1.6;
+	}
+	.editions a {
+		text-underline-offset: 3px;
+	}
+	h3 {
+		margin: 32px 0 8px;
+		font-size: 17px;
+		font-weight: 500;
+	}
+	.name {
+		font-weight: 500;
 	}
 	p {
 		margin: 0;
